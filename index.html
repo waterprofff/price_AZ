@@ -9289,33 +9289,26 @@ window.addEventListener('DOMContentLoaded', () => {
 })();
 </script><script>
 document.addEventListener('DOMContentLoaded', () => {
-  const rows = Array.from(document.querySelectorAll('table.price tbody tr'));
-  const images = [];
-  const captions = [];
-
-  rows.forEach(row => {
-    const img = row.querySelector('.imgcell img');
-    if (img) {
-      images.push(img);
-      const nameCell = row.querySelector('td:nth-child(2)');
-      captions.push(nameCell ? nameCell.textContent.trim() : '');
-    }
+  const thumbs = Array.from(document.querySelectorAll('table.price tbody tr .imgcell img'));
+  const captions = thumbs.map(img => {
+    const row = img.closest('tr');
+    const nameCell = row ? row.querySelector('td:nth-child(2)') : null;
+    return nameCell ? nameCell.textContent.trim() : '';
   });
 
   let currentIndex = -1;
-  let overlay, img, prevBtn, nextBtn, captionEl;
+  let overlay, bigImg, prevBtn, nextBtn, captionEl;
 
   function showOverlay(index) {
     currentIndex = index;
     if (!overlay) {
       overlay = document.createElement('div');
       overlay.className = 'zoom-overlay';
-      img = document.createElement('img');
+      overlay.style.display = 'none';
+
+      bigImg = document.createElement('img');
       captionEl = document.createElement('div');
       captionEl.className = 'zoom-caption';
-
-      overlay.appendChild(img);
-      overlay.appendChild(captionEl);
 
       prevBtn = document.createElement('button');
       nextBtn = document.createElement('button');
@@ -9323,17 +9316,34 @@ document.addEventListener('DOMContentLoaded', () => {
       nextBtn.textContent = '▶';
       prevBtn.className = 'nav-btn prev-btn';
       nextBtn.className = 'nav-btn next-btn';
+
+      overlay.appendChild(bigImg);
+      overlay.appendChild(captionEl);
       overlay.appendChild(prevBtn);
       overlay.appendChild(nextBtn);
-
       document.body.appendChild(overlay);
 
+      // Close when clicking outside image
       overlay.addEventListener('click', e => {
         if (e.target === overlay) hideOverlay();
       });
+
+      // Navigation buttons
       prevBtn.addEventListener('click', e => { e.stopPropagation(); navigate(-1); });
       nextBtn.addEventListener('click', e => { e.stopPropagation(); navigate(1); });
 
+      // Click left/right side of image
+      bigImg.addEventListener('click', e => {
+        const rect = bigImg.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        if (clickX < rect.width / 2) {
+          navigate(-1);
+        } else {
+          navigate(1);
+        }
+      });
+
+      // Keyboard controls
       document.addEventListener('keydown', e => {
         if (!overlay || overlay.style.display !== 'flex') return;
         if (e.key === 'Escape') hideOverlay();
@@ -9341,6 +9351,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'ArrowRight') navigate(1);
       });
 
+      // Swipe for touch devices
       let startX = 0;
       overlay.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
       overlay.addEventListener('touchend', e => {
@@ -9349,7 +9360,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dx < -50) navigate(1);
       });
     }
-    img.src = images[currentIndex].src;
+
+    bigImg.src = thumbs[currentIndex].src;
     captionEl.textContent = captions[currentIndex] || '';
     overlay.style.display = 'flex';
   }
@@ -9359,14 +9371,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function navigate(dir) {
-    if (images.length < 2) return;
-    currentIndex = (currentIndex + dir + images.length) % images.length;
-    img.src = images[currentIndex].src;
+    if (thumbs.length < 2) return;
+    currentIndex = (currentIndex + dir + thumbs.length) % thumbs.length;
+    bigImg.src = thumbs[currentIndex].src;
     captionEl.textContent = captions[currentIndex] || '';
   }
 
-  images.forEach((image, index) => {
-    image.addEventListener('click', () => showOverlay(index));
+  // Attach click to thumbnails
+  thumbs.forEach((thumb, index) => {
+    thumb.addEventListener('click', e => {
+      e.preventDefault();
+      showOverlay(index);
+    });
   });
 });
 </script></body>
