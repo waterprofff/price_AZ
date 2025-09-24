@@ -402,6 +402,20 @@ window.addEventListener('DOMContentLoaded', () => {
 .prev-btn { left: 20px; }
 .next-btn { right: 20px; }
 .nav-btn:hover { background: rgba(255,255,255,0.9); }
+</style><style>
+.zoom-overlay button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+.zoom-overlay button.prev { left: 20px; }
+.zoom-overlay button.next { right: 20px; }
 </style></head>
 <body>
 <div class="header">
@@ -9098,7 +9112,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <div class="tblwrap">
 </div>
 </div>
-<div class="lb" id="lb"><span class="close" id="lbClose">×</span><img alt="" id="lbImg"/></div>
+<div class="lb" id="lb"><span class="close" id="lbClose">×</span><img alt="" id="lbImg" loading="lazy"/></div>
 <footer class="small">Генерация HTML: обновлено</footer>
 </div>
 <script>
@@ -9287,104 +9301,6 @@ window.addEventListener('DOMContentLoaded', () => {
     applyFilters();
   });
 })();
-</script><script>
-document.addEventListener('DOMContentLoaded', () => {
-  const thumbs = Array.from(document.querySelectorAll('table.price tbody tr .imgcell img'));
-  const captions = thumbs.map(img => {
-    const row = img.closest('tr');
-    const nameCell = row ? row.querySelector('td:nth-child(2)') : null;
-    return nameCell ? nameCell.textContent.trim() : '';
-  });
-
-  let currentIndex = -1;
-  let overlay, bigImg, prevBtn, nextBtn, captionEl;
-
-  function showOverlay(index) {
-    currentIndex = index;
-    if (!overlay) {
-      overlay = document.createElement('div');
-      overlay.className = 'zoom-overlay';
-      overlay.style.display = 'none';
-
-      bigImg = document.createElement('img');
-      captionEl = document.createElement('div');
-      captionEl.className = 'zoom-caption';
-
-      prevBtn = document.createElement('button');
-      nextBtn = document.createElement('button');
-      prevBtn.textContent = '◀';
-      nextBtn.textContent = '▶';
-      prevBtn.className = 'nav-btn prev-btn';
-      nextBtn.className = 'nav-btn next-btn';
-
-      overlay.appendChild(bigImg);
-      overlay.appendChild(captionEl);
-      overlay.appendChild(prevBtn);
-      overlay.appendChild(nextBtn);
-      document.body.appendChild(overlay);
-
-      // Close when clicking outside image
-      overlay.addEventListener('click', e => {
-        if (e.target === overlay) hideOverlay();
-      });
-
-      // Navigation buttons
-      prevBtn.addEventListener('click', e => { e.stopPropagation(); navigate(-1); });
-      nextBtn.addEventListener('click', e => { e.stopPropagation(); navigate(1); });
-
-      // Click left/right side of image
-      bigImg.addEventListener('click', e => {
-        const rect = bigImg.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        if (clickX < rect.width / 2) {
-          navigate(-1);
-        } else {
-          navigate(1);
-        }
-      });
-
-      // Keyboard controls
-      document.addEventListener('keydown', e => {
-        if (!overlay || overlay.style.display !== 'flex') return;
-        if (e.key === 'Escape') hideOverlay();
-        if (e.key === 'ArrowLeft') navigate(-1);
-        if (e.key === 'ArrowRight') navigate(1);
-      });
-
-      // Swipe for touch devices
-      let startX = 0;
-      overlay.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
-      overlay.addEventListener('touchend', e => {
-        let dx = e.changedTouches[0].clientX - startX;
-        if (dx > 50) navigate(-1);
-        if (dx < -50) navigate(1);
-      });
-    }
-
-    bigImg.src = thumbs[currentIndex].src;
-    captionEl.textContent = captions[currentIndex] || '';
-    overlay.style.display = 'flex';
-  }
-
-  function hideOverlay() {
-    if (overlay) overlay.style.display = 'none';
-  }
-
-  function navigate(dir) {
-    if (thumbs.length < 2) return;
-    currentIndex = (currentIndex + dir + thumbs.length) % thumbs.length;
-    bigImg.src = thumbs[currentIndex].src;
-    captionEl.textContent = captions[currentIndex] || '';
-  }
-
-  // Attach click to thumbnails
-  thumbs.forEach((thumb, index) => {
-    thumb.addEventListener('click', e => {
-      e.preventDefault();
-      showOverlay(index);
-    });
-  });
-});
 </script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><script>
 document.addEventListener('DOMContentLoaded', () => {
   const btnExcel = document.getElementById('downloadXls');
@@ -9429,6 +9345,75 @@ document.addEventListener('DOMContentLoaded', () => {
       XLSX.writeFile(wb, 'price.xlsx');
     });
   }
+});
+</script><script>
+// Делегирование клика по миниатюрам
+document.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.createElement('div');
+  overlay.className = 'zoom-overlay';
+  overlay.style.display = 'none';
+  overlay.style.position = 'fixed';
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = '100%';
+  overlay.style.height = '100%';
+  overlay.style.background = 'rgba(0,0,0,0.8)';
+  overlay.style.justifyContent = 'center';
+  overlay.style.alignItems = 'center';
+  overlay.style.zIndex = 1000;
+  overlay.innerHTML = '<img style="max-width:90%;max-height:90%"><button class="prev">◀</button><button class="next">▶</button>';
+  document.body.appendChild(overlay);
+
+  const overlayImg = overlay.querySelector('img');
+  const prevBtn = overlay.querySelector('.prev');
+  const nextBtn = overlay.querySelector('.next');
+  let currentIndex = -1;
+  let visibleImages = [];
+
+  function updateVisibleImages() {
+    visibleImages = Array.from(document.querySelectorAll('.imgcell img')).filter(img => img.offsetParent !== null);
+  }
+
+  function showOverlay(img) {
+    updateVisibleImages();
+    currentIndex = visibleImages.indexOf(img);
+    if (currentIndex === -1) return;
+    overlayImg.src = img.src;
+    overlay.style.display = 'flex';
+  }
+
+  document.addEventListener('click', e => {
+    if (e.target.matches('.imgcell img')) {
+      e.preventDefault();
+      showOverlay(e.target);
+    }
+  });
+
+  function showNext() {
+    if (visibleImages.length === 0) return;
+    currentIndex = (currentIndex + 1) % visibleImages.length;
+    overlayImg.src = visibleImages[currentIndex].src;
+  }
+
+  function showPrev() {
+    if (visibleImages.length === 0) return;
+    currentIndex = (currentIndex - 1 + visibleImages.length) % visibleImages.length;
+    overlayImg.src = visibleImages[currentIndex].src;
+  }
+
+  nextBtn.addEventListener('click', showNext);
+  prevBtn.addEventListener('click', showPrev);
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.style.display = 'none';
+  });
+
+  document.addEventListener('keydown', e => {
+    if (overlay.style.display === 'flex') {
+      if (e.key === 'Escape') overlay.style.display = 'none';
+      if (e.key === 'ArrowRight') showNext();
+      if (e.key === 'ArrowLeft') showPrev();
+    }
+  });
 });
 </script></body>
 </html>
