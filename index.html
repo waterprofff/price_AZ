@@ -5,6 +5,24 @@
 		<meta charset="utf-8" />
 		<meta content="width=device-width,initial-scale=1" name="viewport" />
 		<title>Прайс Geizer</title>
+<style>
+/* Стилизация подписи для чекбокса "Показать только новинки" */
+label[for="showNewOnly"],
+label:has(#showNewOnly),
+#showNewOnly + label {
+  font-weight: bold;           /* жирный шрифт */
+  font-size: 15px;             /* чуть крупнее */
+
+  cursor: pointer;             /* курсор "рука" при наведении */
+}
+
+/* Чекбокс — увеличенный и с отступом */
+#showNewOnly {
+  transform: scale(1.2);
+  margin-right: 6px;
+}
+</style>
+</style>
 		<style>
 			/* оверлей для увеличенного фото */
 			.zoom-overlay {
@@ -442,6 +460,9 @@
 		<div class="header">
 			<div class="title">ПРАЙС-ЛИСТ Бытовые фильтры Гейзер</div>
 			<input id="q" placeholder="Поиск по прайсу…" type="search" />
+						<div class="group">
+  <label><input type="checkbox" id="showNewOnly"> показать ТОЛЬКО НОВИНКИ </label>
+</div>
 			<div class="group">
 				<label for="discount">Скидка, %:</label>
 				<input class="input-small" id="discount" max="99" min="0" placeholder="0" step="1" type="number" />
@@ -452,9 +473,7 @@
 				<button class="btn" id="downloadXls">Скачать Excel (без фото)</button>
 				<button class="btn" id="downloadPdf">Скачать PDF с фото</button>
 			</div>
-			<div class="group"><input id="onlyPromoExcel" type="checkbox" /><label for="onlyPromoExcel">Только акции (Excel)</label></div>
-		</div>
-		<div class="container">
+				<div class="container">
 			<h2>
 				тел./факс (общий)
 				<a href="tel:+78126050055">+7 (812) 605-00-55</a>
@@ -11254,5 +11273,23 @@
 			  });
 			});
 		</script>
+		<script>
+// === Filter new items ===
+document.addEventListener('DOMContentLoaded', () => {
+  const checkbox = document.getElementById('showNewOnly');
+  if (!checkbox) return;
+  checkbox.addEventListener('change', () => {
+    const showOnlyNew = checkbox.checked;
+    document.querySelectorAll('table.price tbody tr').forEach(tr => {
+      const isNew = tr.classList.contains('new-item');
+      if (showOnlyNew && !isNew) {
+        tr.style.display = 'none';
+      } else {
+        tr.style.display = '';
+      }
+    });
+  });
+});
+</script>
 	</body>
 </html>
