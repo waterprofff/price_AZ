@@ -12,7 +12,7 @@
  *   см. блок "APPLY_TO_ROW" — там показано, куда кладём image_url, product_url и т.д.
  */
 
-const CSV_URL = "https://docs.google.com/spreadsheets/d/14WyLMRfoAQaJ5ShXM0QFjd2K_iLueFMejbhQns66gcw/edit?usp=sharing"; // ← ваш общий URL
+const CSV_URL = "https://docs.google.com/spreadsheets/d/14WyLMRfoAQaJ5ShXM0QFjd2K_iLueFMejbhQns66gcw/export?format=csv&gid=1862196171"; // ← ваш общий URL
 const LIST_FILTER = "byt";        // эта страница — бытовой прайс
 const ENABLE_PROMOS = true;       // выключить акции: false
 const CSV_DELIMITER = ",";        // CSV Google Sheets
