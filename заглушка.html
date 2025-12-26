@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Прайс в работе</title>
+  <style>
+    :root{
+      --bg1:#0b1b3a;
+      --bg2:#0a3d2f;
+      --card: rgba(255,255,255,.10);
+      --card2: rgba(255,255,255,.06);
+      --text:#ffffff;
+      --muted: rgba(255,255,255,.82);
+      --accent:#ffd36a;
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color:var(--text);
+      overflow:hidden;
+
+      /* Новогодний фон */
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(255,211,106,.20), transparent 55%),
+        radial-gradient(900px 500px at 80% 15%, rgba(120,240,255,.18), transparent 52%),
+        radial-gradient(1100px 700px at 50% 90%, rgba(160,255,200,.10), transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+    }
+
+    /* Лёгкая “гирлянда” сверху */
+    .garland{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      height:64px;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 8% 55%,  rgba(255,210,90,.95) 0 6px, transparent 7px),
+        radial-gradient(circle at 16% 50%, rgba(255,120,160,.92) 0 6px, transparent 7px),
+        radial-gradient(circle at 24% 56%, rgba(120,220,255,.92) 0 6px, transparent 7px),
+        radial-gradient(circle at 32% 50%, rgba(140,255,190,.92) 0 6px, transparent 7px),
+        radial-gradient(circle at 40% 55%, rgba(255,210,90,.95) 0 6px, transparent 7px),
+        radial-gradient(circle at 48% 50%, rgba(255,120,160,.92) 0 6px, transparent 7px),
+        radial-gradient(circle at 56% 56%, rgba(120,220,255,.92) 0 6px, transparent 7px),
+        radial-gradient(circle at 64% 50%, rgba(140,255,190,.92) 0 6px, transparent 7px),
+        radial-gradient(circle at 72% 55%, rgba(255,210,90,.95) 0 6px, transparent 7px),
+        radial-gradient(circle at 80% 50%, rgba(255,120,160,.92) 0 6px, transparent 7px),
+        radial-gradient(circle at 88% 56%, rgba(120,220,255,.92) 0 6px, transparent 7px),
+        radial-gradient(circle at 96% 50%, rgba(140,255,190,.92) 0 6px, transparent 7px);
+      opacity:.9;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+    }
+    .garland::before{
+      content:"";
+      position:absolute;
+      left:-5%;
+      right:-5%;
+      top:18px;
+      height:34px;
+      border-top: 3px solid rgba(255,255,255,.30);
+      border-radius: 0 0 80% 80%;
+      transform: translateY(-10px);
+      opacity:.55;
+    }
+
+    /* Центрированный блок */
+    .wrap{
+      height:100%;
+      display:grid;
+      place-items:center;
+      padding: 24px;
+      position:relative;
+      z-index: 2;
+    }
+
+    .card{
+      width:min(760px, 100%);
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 36px 28px;
+      text-align:center;
+    }
+
+    .badge{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.18);
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    h1{
+      margin: 10px 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.08;
+      letter-spacing: .2px;
+      text-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+
+    p{
+      margin: 0;
+      font-size: clamp(16px, 2.2vw, 20px);
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .accent{
+      color: var(--accent);
+      font-weight: 650;
+    }
+
+    .footer{
+      margin-top: 18px;
+      font-size: 13px;
+      color: rgba(255,255,255,.68);
+    }
+
+    /* СНЕГ */
+    .snow{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:1;
+      overflow:hidden;
+    }
+    .flake{
+      position:absolute;
+      top:-10vh;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.85);
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
+      opacity:.9;
+      animation-name: fall, sway;
+      animation-timing-function: linear, ease-in-out;
+      animation-iteration-count: infinite, infinite;
+    }
+    @keyframes fall{
+      to { transform: translateY(120vh); }
+    }
+    @keyframes sway{
+      0%,100% { margin-left: 0px; }
+      50% { margin-left: 22px; }
+    }
+
+    /* Мелкие звездочки на фоне */
+    .stars{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.35) 1px, transparent 2px),
+        radial-gradient(circle, rgba(255,255,255,.25) 1px, transparent 2px),
+        radial-gradient(circle, rgba(255,255,255,.18) 1px, transparent 2px);
+      background-size: 160px 160px, 220px 220px, 300px 300px;
+      background-position: 0 0, 40px 60px, 120px 20px;
+      opacity:.45;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .flake{ animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="garland" aria-hidden="true"></div>
+  <div class="snow" id="snow" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <section class="card" role="status" aria-live="polite">
+      <h1>С наступающим новым годом</h1>
+      <p><span class="accent">Прайс в работе, цены обновляются</span></p>
+
+      <div class="footer">
+        Страница обновится после завершения работ.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Генерация "снега" без библиотек
+    (function () {
+      const snow = document.getElementById('snow');
+      const count = 42; // количество снежинок
+
+      for (let i = 0; i < count; i++) {
+        const flake = document.createElement('div');
+        flake.className = 'flake';
+
+        // случайные параметры
+        const size = 3 + Math.random() * 7;                 // 3..10px
+        const left = Math.random() * 100;                   // %
+        const fallDuration = 8 + Math.random() * 10;        // 8..18s
+        const swayDuration = 2.5 + Math.random() * 3.5;     // 2.5..6s
+        const delay = -Math.random() * fallDuration;        // чтобы снег "уже шёл"
+
+        flake.style.width = size + 'px';
+        flake.style.height = size + 'px';
+        flake.style.left = left + '%';
+        flake.style.opacity = (0.35 + Math.random() * 0.65).toFixed(2);
+
+        flake.style.animationDuration = fallDuration + 's, ' + swayDuration + 's';
+        flake.style.animationDelay = delay + 's, ' + (delay * 0.6) + 's';
+
+        snow.appendChild(flake);
+      }
+    })();
+  </script>
+</body>
+</html>
