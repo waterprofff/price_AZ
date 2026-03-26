@@ -1,166 +1,225 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title> Прайс в работе 💐</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Прайс переехал</title>
 
-<style>
-:root{
-  --bg1:#fff1f6;
-  --bg2:#ffe4ef;
-  --accent:#e11d74;
-  --text:#5b2a3a;
-}
+  <style>
+    :root{
+      --bg1:#f3fbf7;
+      --bg2:#e4f5ec;
+      --bg3:#d3ecdf;
+      --accent:#1f9d63;
+      --accent-dark:#15784b;
+      --text:#1f3a2b;
+      --muted:#5f7f6d;
+      --card:#ffffff;
+      --shadow:0 20px 50px rgba(21, 120, 75, 0.12);
+      --border:rgba(31, 157, 99, 0.14);
+    }
 
-*{margin:0;padding:0;box-sizing:border-box;}
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
 
-body{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: radial-gradient(1200px 800px at 50% -10%, var(--bg2), var(--bg1));
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  overflow:hidden;
-  position:relative;
-}
+    html, body{
+      width:100%;
+      min-height:100%;
+    }
 
-.card{
-  position:relative;
-  z-index:2;
-  text-align:center;
-  padding:40px 50px;
-  background:white;
-  border-radius:20px;
-  box-shadow:0 25px 60px rgba(0,0,0,.15);
-  animation:fadeIn 1.2s ease;
-}
+    body{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(31,157,99,0.08) 0 90px, transparent 91px),
+        radial-gradient(circle at 85% 25%, rgba(31,157,99,0.07) 0 140px, transparent 141px),
+        radial-gradient(circle at 75% 78%, rgba(31,157,99,0.08) 0 110px, transparent 111px),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 52%, var(--bg3) 100%);
+      overflow:hidden;
+      position:relative;
+    }
 
-h1{
-  font-size:40px;
-  color:var(--accent);
-  margin-bottom:15px;
-}
+    /* водные линии / рябь */
+    body::before,
+    body::after{
+      content:"";
+      position:absolute;
+      inset:auto -10% 0 -10%;
+      height:220px;
+      pointer-events:none;
+      background-repeat:no-repeat;
+      opacity:.32;
+    }
 
-p{
-  font-size:18px;
-  color:var(--text);
-}
+    body::before{
+      bottom:0;
+      background:
+        radial-gradient(120% 90px at 10% 100%, transparent 58%, rgba(31,157,99,0.11) 59%, transparent 60%),
+        radial-gradient(120% 100px at 35% 100%, transparent 58%, rgba(31,157,99,0.10) 59%, transparent 60%),
+        radial-gradient(120% 90px at 60% 100%, transparent 58%, rgba(31,157,99,0.11) 59%, transparent 60%),
+        radial-gradient(120% 100px at 85% 100%, transparent 58%, rgba(31,157,99,0.10) 59%, transparent 60%);
+    }
 
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(20px);}
-  to{opacity:1; transform:translateY(0);}
-}
+    body::after{
+      bottom:28px;
+      opacity:.18;
+      background:
+        radial-gradient(120% 80px at 20% 100%, transparent 58%, rgba(31,157,99,0.10) 59%, transparent 60%),
+        radial-gradient(120% 85px at 50% 100%, transparent 58%, rgba(31,157,99,0.09) 59%, transparent 60%),
+        radial-gradient(120% 80px at 80% 100%, transparent 58%, rgba(31,157,99,0.10) 59%, transparent 60%);
+    }
 
-/* ====== ЦВЕТЫ ====== */
+    .card{
+      position:relative;
+      z-index:1;
+      width:min(100%, 760px);
+      background:rgba(255,255,255,0.94);
+      backdrop-filter:blur(6px);
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:42px 36px;
+      text-align:center;
+      animation:fadeIn .7s ease;
+    }
 
-.petals{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:1;
-  overflow:hidden;
-}
+    .icon{
+      width:72px;
+      height:72px;
+      margin:0 auto 20px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 35% 30%, #7be2b0 0%, #38c983 38%, #1f9d63 72%, #15784b 100%);
+      position:relative;
+      box-shadow:0 10px 24px rgba(31, 157, 99, 0.20);
+    }
 
-.flower{
-  position:absolute;
-  top:-10vh;
-  width:18px;
-  height:18px;
-  opacity:.95;
-  will-change:transform;
-  animation-name: fall, drift, spin;
-  animation-timing-function: linear, ease-in-out, linear;
-  animation-iteration-count: infinite, infinite, infinite;
-}
+    .icon::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:16px;
+      width:28px;
+      height:38px;
+      transform:translateX(-50%);
+      background:#fff;
+      border-radius:50% 50% 60% 60% / 35% 35% 65% 65%;
+      clip-path:polygon(50% 0%, 80% 28%, 100% 60%, 78% 100%, 22% 100%, 0% 60%, 20% 28%);
+      opacity:.96;
+    }
 
-/* рисуем цветок */
-.flower::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 50% 20%, var(--p) 0 42%, transparent 43%),
-    radial-gradient(circle at 80% 40%, var(--p) 0 42%, transparent 43%),
-    radial-gradient(circle at 68% 78%, var(--p) 0 42%, transparent 43%),
-    radial-gradient(circle at 32% 78%, var(--p) 0 42%, transparent 43%),
-    radial-gradient(circle at 20% 40%, var(--p) 0 42%, transparent 43%),
-    radial-gradient(circle at 50% 50%, var(--c) 0 18%, transparent 19%);
-  transform:rotate(var(--r));
-}
+    h1{
+      font-size:clamp(28px, 4vw, 42px);
+      line-height:1.15;
+      margin-bottom:14px;
+      color:var(--accent-dark);
+      font-weight:800;
+      letter-spacing:-0.02em;
+    }
 
-@keyframes fall{
-  to { transform: translateY(120vh); }
-}
+    p{
+      font-size:18px;
+      line-height:1.6;
+      color:var(--muted);
+      max-width:620px;
+      margin:0 auto;
+    }
 
-@keyframes drift{
-  0%,100% { margin-left: 0px; }
-  50% { margin-left: 40px; }
-}
+    .link-wrap{
+      margin-top:28px;
+    }
 
-@keyframes spin{
-  to { rotate: 360deg; }
-}
+    .link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-height:54px;
+      padding:14px 24px;
+      border-radius:14px;
+      background:linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color:#fff;
+      text-decoration:none;
+      font-size:18px;
+      font-weight:700;
+      box-shadow:0 12px 24px rgba(31, 157, 99, 0.22);
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
 
-</style>
+    .link:hover{
+      transform:translateY(-1px);
+      box-shadow:0 16px 28px rgba(31, 157, 99, 0.28);
+    }
+
+    .link:active{
+      transform:translateY(0);
+    }
+
+    .note{
+      margin-top:16px;
+      font-size:14px;
+      color:#7b9787;
+    }
+
+    @keyframes fadeIn{
+      from{
+        opacity:0;
+        transform:translateY(18px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    @media (max-width: 640px){
+      .card{
+        padding:32px 22px;
+        border-radius:20px;
+      }
+
+      p{
+        font-size:16px;
+      }
+
+      .link{
+        width:100%;
+        font-size:17px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="card">
+    <div class="icon" aria-hidden="true"></div>
+    <h1>Прайс переехал</h1>
+    <p>
+      Актуальная версия прайса теперь доступна по новой ссылке.
+      Для просмотра и работы с ценами используйте таблицу ниже.
+    </p>
 
-<div class="petals" id="petals"></div>
+    <div class="link-wrap">
+      <a
+        class="link"
+        href="https://docs.google.com/spreadsheets/d/1mu_H5DUkRX7lD_VVCAZeaS1rrk12zSjpVr0_DIhRZww/edit?gid=0#gid=0"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Прайс переехал сюда
+      </a>
+    </div>
 
-<div class="card">
-  <h1>С наступающим 8 Марта 💐</h1>
-  <p>Прайс в работе, цены обновляются</p>
-</div>
-
-<script>
-const container = document.getElementById("petals");
-
-const petalColors = [
-  "#ff6fa5",
-  "#ff85b3",
-  "#ff9cc0",
-  "#f472b6",
-  "#fb7185"
-];
-
-const centerColors = [
-  "#ffd166",
-  "#ffe066",
-  "#ffc300"
-];
-
-const COUNT = 45;
-
-for(let i = 0; i < COUNT; i++){
-  const flower = document.createElement("div");
-  flower.className = "flower";
-
-  const size = Math.random() * 14 + 14;
-  const left = Math.random() * 100;
-  const duration = Math.random() * 10 + 10;
-  const delay = Math.random() * 10;
-  const driftDuration = Math.random() * 6 + 6;
-  const spinDuration = Math.random() * 8 + 6;
-
-  const petal = petalColors[Math.floor(Math.random() * petalColors.length)];
-  const center = centerColors[Math.floor(Math.random() * centerColors.length)];
-
-  flower.style.left = left + "vw";
-  flower.style.width = size + "px";
-  flower.style.height = size + "px";
-  flower.style.setProperty("--p", petal);
-  flower.style.setProperty("--c", center);
-  flower.style.setProperty("--r", Math.random()*360 + "deg");
-
-  flower.style.animationDuration = `${duration}s, ${driftDuration}s, ${spinDuration}s`;
-  flower.style.animationDelay = `${delay}s, ${delay}s, 0s`;
-
-  container.appendChild(flower);
-}
-</script>
-
+    <div class="note">
+      Если ссылка не открывается, обновите страницу или откройте её в новом окне.
+    </div>
+  </div>
 </body>
 </html>
